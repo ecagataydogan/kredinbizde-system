@@ -9,4 +9,5 @@ spring:
         - id: kredinbizde-service
           uri: lb://KREDINBIZDE-SERVICE
           predicates:
-            - Path=/api/users/**
+            - Path=/api/v1/**
+
