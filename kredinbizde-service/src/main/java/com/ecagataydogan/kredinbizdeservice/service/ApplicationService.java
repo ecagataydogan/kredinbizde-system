@@ -1,5 +1,7 @@
 package com.ecagataydogan.kredinbizdeservice.service;
 
+import com.ecagataydogan.kredinbizdeservice.client.AkbankServiceClient;
+import com.ecagataydogan.kredinbizdeservice.client.dto.request.AkbankApplicationRequest;
 import com.ecagataydogan.kredinbizdeservice.converter.ApplicationConverter;
 import com.ecagataydogan.kredinbizdeservice.dto.request.ApplicationRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.response.ApplicationResponse;
@@ -24,6 +26,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final ApplicationConverter applicationConverter;
+    private final AkbankServiceClient akbankServiceClient;
 
 
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
@@ -32,6 +35,7 @@ public class ApplicationService {
             Application toSave = applicationConverter.toApplication(applicationRequest,optionalUser.get());
             toSave.setApplicationStatus(ApplicationStatus.INITIAL);
             applicationRepository.save(toSave);
+            ApplicationResponse akbankApplicationResponse = akbankServiceClient.createApplication(prepareAkbankApplicationRequest(optionalUser.get()));
             return applicationConverter.toResponse(toSave);
         }
         //error will occur
@@ -51,5 +55,11 @@ public class ApplicationService {
         }
         //Error will occur
         throw new ApplicationNotFoundException("application not found");
+    }
+
+    private AkbankApplicationRequest prepareAkbankApplicationRequest(User user) {
+        AkbankApplicationRequest applicationRequest = new AkbankApplicationRequest();
+        applicationRequest.setUserId(user.getId());
+        return applicationRequest;
     }
 }
