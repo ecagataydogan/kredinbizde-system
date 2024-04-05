@@ -6,6 +6,7 @@ import com.ecagataydogan.kredinbizdeservice.dto.request.CreateUserRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.request.UpdateUserRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.response.UserResponse;
 import com.ecagataydogan.kredinbizdeservice.entity.User;
+import com.ecagataydogan.kredinbizdeservice.exception.UserNotFoundException;
 import com.ecagataydogan.kredinbizdeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.sql.Update;
@@ -42,7 +43,7 @@ public class UserService {
             return userConverter.toResponse(optionalUser.get());
         }
         //Exception will occur
-        return new UserResponse();
+        throw new UserNotFoundException("user not found");
     }
 
     public UserResponse updateUser(Long userId, UpdateUserRequest updateUserRequest) {
@@ -53,7 +54,7 @@ public class UserService {
             return userConverter.toResponse(userRepository.save(foundUser));
         }
         //Exception will occur
-        return new UserResponse();
+        throw new UserNotFoundException("user not found");
 
 
     }

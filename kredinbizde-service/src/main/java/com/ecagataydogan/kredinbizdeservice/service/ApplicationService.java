@@ -7,6 +7,8 @@ import com.ecagataydogan.kredinbizdeservice.dto.response.UserResponse;
 import com.ecagataydogan.kredinbizdeservice.entity.Application;
 import com.ecagataydogan.kredinbizdeservice.entity.User;
 import com.ecagataydogan.kredinbizdeservice.enums.ApplicationStatus;
+import com.ecagataydogan.kredinbizdeservice.exception.ApplicationNotFoundException;
+import com.ecagataydogan.kredinbizdeservice.exception.UserNotFoundException;
 import com.ecagataydogan.kredinbizdeservice.repository.ApplicationRepository;
 import com.ecagataydogan.kredinbizdeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class ApplicationService {
             return applicationConverter.toResponse(toSave);
         }
         //error will occur
-        return new ApplicationResponse();
+        throw new UserNotFoundException("user not found");
     }
 
     public List<ApplicationResponse> getAllApplications() {
@@ -48,6 +50,6 @@ public class ApplicationService {
             return applicationConverter.toResponse(optionalApplication.get());
         }
         //Error will occur
-        return new ApplicationResponse();
+        throw new ApplicationNotFoundException("application not found");
     }
 }
