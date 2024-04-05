@@ -35,7 +35,7 @@ public class UserService {
         toSave.setIsActive(true);
         toSave.setApplications(new ArrayList<>());
         User savedUser = userRepository.save(toSave);
-        log.info("user kaydedildi");
+        log.info("user saved");
         notificationProducer.sendNotification(prepareNotificationDTO(NotificationType.EMAIL, savedUser.getEmail()));
         return userConverter.toResponse(savedUser);
     }
