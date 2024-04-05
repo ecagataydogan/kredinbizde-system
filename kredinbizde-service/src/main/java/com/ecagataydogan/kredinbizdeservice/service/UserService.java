@@ -7,8 +7,12 @@ import com.ecagataydogan.kredinbizdeservice.dto.request.UpdateUserRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.response.UserResponse;
 import com.ecagataydogan.kredinbizdeservice.entity.User;
 import com.ecagataydogan.kredinbizdeservice.exception.UserNotFoundException;
+import com.ecagataydogan.kredinbizdeservice.producer.NotificationProducer;
+import com.ecagataydogan.kredinbizdeservice.producer.dto.NotificationDTO;
+import com.ecagataydogan.kredinbizdeservice.producer.enums.NotificationType;
 import com.ecagataydogan.kredinbizdeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.sql.Update;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +23,21 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
+    private final NotificationProducer notificationProducer;
+
 
     public UserResponse createUser(CreateUserRequest createUserRequest) {
         User toSave = userConverter.toUser(createUserRequest);
         toSave.setIsActive(true);
         toSave.setApplications(new ArrayList<>());
-        return userConverter.toResponse(userRepository.save(toSave));
+        User savedUser = userRepository.save(toSave);
+        log.info("user kaydedildi");
+        notificationProducer.sendNotification(prepareNotificationDTO(NotificationType.EMAIL, savedUser.getEmail()));
+        return userConverter.toResponse(savedUser);
     }
 
 
@@ -84,4 +94,11 @@ public class UserService {
         }
     }
 
+    private NotificationDTO prepareNotificationDTO(NotificationType notificationType, String email) {
+        return NotificationDTO.builder()
+                .message("user kaydedildi.")
+                .notificationType(notificationType)
+                .email(email)
+                .build();
+    }
 }
