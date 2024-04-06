@@ -1,6 +1,7 @@
 package com.ecagataydogan.kredinbizdeservice.service;
 
 import com.ecagataydogan.kredinbizdeservice.converter.UserConverter;
+import com.ecagataydogan.kredinbizdeservice.dto.request.AddressRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.request.CreateUserRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.request.UpdateUserRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.response.UserResponse;
@@ -115,13 +116,11 @@ public class UserServiceTest {
 
         when(userRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
-
         assertThrows(UserNotFoundException.class, () -> userService.getUserById(2L));
     }
 
     @Test
     public void should_return_updated_user() {
-        // Arrange
         Long userId = 1L;
         UpdateUserRequest updateUserRequest = new UpdateUserRequest();
         User foundUser = createDummyUser();
@@ -140,24 +139,13 @@ public class UserServiceTest {
         verify(userConverter, times(1)).toResponse(updatedUser);
     }
 
-
-
-
-
-
-
-
-
-
-
-
     private CreateUserRequest prepareCreateUserRequest() {
         CreateUserRequest createUserRequest = new CreateUserRequest();
         createUserRequest.setName("test");
         createUserRequest.setSurname("test");
         createUserRequest.setPassword("password");
         createUserRequest.setEmail("test@gmail.com");
-        createUserRequest.setAddress(new Address());
+        createUserRequest.setAddress(new AddressRequest());
         createUserRequest.setBirthDate(LocalDate.now());
         createUserRequest.setPhoneNumber("555555555");
         return createUserRequest;
@@ -170,7 +158,7 @@ public class UserServiceTest {
         user.setBirthDate(createUserRequest.getBirthDate());
         user.setEmail(createUserRequest.getEmail());
         user.setPassword(createUserRequest.getPassword());
-        user.setAddress(createUserRequest.getAddress());
+//        user.setAddress(createUserRequest.getAddress());
         user.setPhoneNumber(createUserRequest.getPhoneNumber());
         return user;
     }
@@ -213,16 +201,15 @@ public class UserServiceTest {
         address.setProvince("USA");
 
         List<Application> applications = new ArrayList<>();
-        // Dummy applications can be added here if needed
 
         return new User(
                 1L,
-                "John",
-                "Doe",
+                "test",
+                "test",
                 LocalDate.of(1990, 5, 15),
-                "john.doe@example.com",
+                "test@example.com",
                 "password123",
-                "+1234567890",
+                "55555555",
                 true,
                 address,
                 applications
