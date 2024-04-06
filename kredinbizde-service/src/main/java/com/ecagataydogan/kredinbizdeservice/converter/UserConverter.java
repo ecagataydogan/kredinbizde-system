@@ -12,13 +12,14 @@ import java.util.ArrayList;
 @Component
 public class UserConverter {
     public User toUser(CreateUserRequest createUserRequest) {
+        AddressConverter addressConverter = new AddressConverter();
         User user = new User();
         user.setName(createUserRequest.getName());
         user.setSurname(createUserRequest.getSurname());
         user.setBirthDate(createUserRequest.getBirthDate());
         user.setEmail(createUserRequest.getEmail());
         user.setPassword(createUserRequest.getPassword());
-        user.setAddress(createUserRequest.getAddress());
+        user.setAddress(addressConverter.toAddress(createUserRequest.getAddress()));
         user.setPhoneNumber(createUserRequest.getPhoneNumber());
         user.setIsActive(true);
         user.setApplications(new ArrayList<>());

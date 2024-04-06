@@ -18,6 +18,5 @@ public class CreateUserRequest implements Serializable {
     private String email;
     private String password;
     private String phoneNumber;
-    private Address address;
-
+    private AddressRequest address;
 }
