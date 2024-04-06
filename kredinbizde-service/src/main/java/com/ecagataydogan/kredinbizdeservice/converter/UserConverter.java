@@ -7,6 +7,8 @@ import com.ecagataydogan.kredinbizdeservice.entity.User;
 import org.hibernate.sql.Update;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class UserConverter {
     public User toUser(CreateUserRequest createUserRequest) {
@@ -18,6 +20,8 @@ public class UserConverter {
         user.setPassword(createUserRequest.getPassword());
         user.setAddress(createUserRequest.getAddress());
         user.setPhoneNumber(createUserRequest.getPhoneNumber());
+        user.setIsActive(true);
+        user.setApplications(new ArrayList<>());
         return user;
     }
 

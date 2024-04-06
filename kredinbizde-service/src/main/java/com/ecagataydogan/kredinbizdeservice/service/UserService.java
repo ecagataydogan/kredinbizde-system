@@ -14,6 +14,8 @@ import com.ecagataydogan.kredinbizdeservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.sql.Update;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,8 +34,6 @@ public class UserService {
 
     public UserResponse createUser(CreateUserRequest createUserRequest) {
         User toSave = userConverter.toUser(createUserRequest);
-        toSave.setIsActive(true);
-        toSave.setApplications(new ArrayList<>());
         User savedUser = userRepository.save(toSave);
         log.info("user saved");
         notificationProducer.sendNotification(prepareNotificationDTO(NotificationType.EMAIL, savedUser.getEmail()));
@@ -48,6 +48,7 @@ public class UserService {
     }
 
     public UserResponse getUserById(Long userId) {
+        log.info("dbden alındı");
         Optional<User> optionalUser =  userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             return userConverter.toResponse(optionalUser.get());

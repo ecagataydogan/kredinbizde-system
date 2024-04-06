@@ -5,13 +5,17 @@ import com.ecagataydogan.kredinbizdeservice.entity.Application;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
-public class UserResponse {
+@ToString
+public class UserResponse implements Serializable {
     private Long id;
     private String name;
     private String surname;
