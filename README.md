@@ -10,6 +10,8 @@ Kredinbizde is a system where users can register and create applications.
 - **kredinbizde-discovery:** Eureka server, services register to this service.
 - **kredinbizde-gw:** It is the gateway of the system opening to the outside.
 
+
+
 ![Ekran Resmi 2024-04-07 23 01 16](https://github.com/ecagataydogan/kredinbizde-system/assets/101594855/acdfccf7-574e-46aa-a23c-633bd2d8c821)
 
 
@@ -24,11 +26,29 @@ Kredinbizde is a system where users can register and create applications.
 - Eureka Server
 - Swagger
 
-## How to run
+## How to run 
 
-If you don't change anything, the gateway will work on port 8084. So you can send your requests to localhost:8084/api/v1/..
+If you don't change anything, the gateway will work on port ```8084```. So you can send your requests to ```localhost:8084/api/v1/..```
 
-Prerequisite: You need to have maven, docker, rabbitmq and redis
+Ports:
+
+```8084``` -> kredinbizde-gateway
+
+```8080``` -> kredinbizde-service
+
+```8761``` -> kredinbizde-discovery
+
+```8081``` -> akbank-service
+
+```8082``` -> notification-service
+
+
+Prerequisite: You need to have maven, docker, rabbitmq, redis, and mysql
+
+### MYSQL
+```code
+docker run -d --name mysql-db -e MYSQL_ROOT_PASSWORD=your_password -e MYSQL_DATABASE=kredinbizde_db -e MYSQL_DATABASE=akbank_db -p 3306:3306 mysql:latest
+```
 
 ### RabbitMQ
 ```code
@@ -39,14 +59,25 @@ docker run -d --hostname my-rabbit --name myrabbit -e RABBITMQ_DEFAULT_USER=admi
 ```code
 docker run --name my-redis-container -d -p 6379:6379 redis
 ```
-Set port information to 6379
 
 ### Maven run for services (run seperately, change jar file name according to service)
 ```code
 maven clean install
 ```
 ```
+code java -jar target/kredinbizde-discovery-0.0.1-SNAPSHOT.jar
+```
+```
+code java -jar target/kredinbizde-gw-0.0.1-SNAPSHOT.jar
+```
+```
 code java -jar target/kredinbizde-service-0.0.1-SNAPSHOT.jar
+```
+```
+code java -jar target/akbank-service-0.0.1-SNAPSHOT.jar
+```
+```
+code java -jar target/notification-service-0.0.1-SNAPSHOT.jar
 ```
 
 
@@ -78,7 +109,7 @@ After running the project, you can click the link below to see how to use the AP
 
 Added postman collection for usage. You can import to postman and try.
 
-kredinbizde-gw.postman_collection.json
+```kredinbizde-gw.postman_collection.json```
 
 ### 1. Create user
 
@@ -147,7 +178,7 @@ kredinbizde-gw.postman_collection.json
         "birthDate": "2024-04-05",
         "email": "ecagataydogan1@gmail.com",
         "password": "password",
-        "phoneNumber": "5549969627",
+        "phoneNumber": "555555555",
         "isActive": true,
         "address": {
             "id": 1,
@@ -164,7 +195,7 @@ kredinbizde-gw.postman_collection.json
         "birthDate": "2024-04-05",
         "email": "test@gmail.com",
         "password": "test",
-        "phoneNumber": "999999999",
+        "phoneNumber": "555555555",
         "isActive": true,
         "address": {
             "id": 2,
