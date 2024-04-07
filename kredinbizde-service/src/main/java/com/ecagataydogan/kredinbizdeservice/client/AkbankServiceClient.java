@@ -14,6 +14,4 @@ public interface AkbankServiceClient {
     @PostMapping("api/v1/akbank/applications")
     ApplicationResponse createApplication(@RequestBody AkbankApplicationRequest request);
 
-    @GetMapping("api/v1/akbank/applications")
-    void deneme(@PathVariable Long id);
 }
