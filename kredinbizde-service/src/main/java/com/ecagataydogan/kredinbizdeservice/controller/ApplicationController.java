@@ -9,7 +9,6 @@ import com.ecagataydogan.kredinbizdeservice.enums.ApplicationStatus;
 import com.ecagataydogan.kredinbizdeservice.repository.ApplicationRepository;
 import com.ecagataydogan.kredinbizdeservice.repository.UserRepository;
 import com.ecagataydogan.kredinbizdeservice.service.ApplicationService;
-import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;

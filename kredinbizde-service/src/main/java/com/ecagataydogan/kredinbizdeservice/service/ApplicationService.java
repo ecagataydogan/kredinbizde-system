@@ -13,6 +13,7 @@ import com.ecagataydogan.kredinbizdeservice.exception.ApplicationNotFoundExcepti
 import com.ecagataydogan.kredinbizdeservice.exception.UserNotFoundException;
 import com.ecagataydogan.kredinbizdeservice.repository.ApplicationRepository;
 import com.ecagataydogan.kredinbizdeservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class ApplicationService {
     private final AkbankServiceClient akbankServiceClient;
 
 
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public ApplicationResponse createApplication(ApplicationRequest applicationRequest) {
         Optional<User> optionalUser = userRepository.findById(applicationRequest.getUserId());
         if (optionalUser.isPresent()) {

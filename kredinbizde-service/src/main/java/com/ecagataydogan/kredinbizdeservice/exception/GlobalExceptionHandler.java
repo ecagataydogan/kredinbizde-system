@@ -21,6 +21,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(prepareExceptionResponse(applicationNotFoundException, HttpStatus.NOT_FOUND));
     }
+    @ExceptionHandler(UserAlreadyExistException.class)
+    public ResponseEntity<ExceptionResponse> handleApplicationNotFoundException(UserAlreadyExistException userAlreadyExistException) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(prepareExceptionResponse(userAlreadyExistException, HttpStatus.NOT_FOUND));
+    }
 
     private ExceptionResponse prepareExceptionResponse(Exception exception, HttpStatus httpStatus) {
         ExceptionResponse exceptionResponse = new ExceptionResponse();

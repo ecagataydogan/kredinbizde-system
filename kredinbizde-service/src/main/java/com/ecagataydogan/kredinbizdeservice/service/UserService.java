@@ -6,11 +6,13 @@ import com.ecagataydogan.kredinbizdeservice.dto.request.CreateUserRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.request.UpdateUserRequest;
 import com.ecagataydogan.kredinbizdeservice.dto.response.UserResponse;
 import com.ecagataydogan.kredinbizdeservice.entity.User;
+import com.ecagataydogan.kredinbizdeservice.exception.UserAlreadyExistException;
 import com.ecagataydogan.kredinbizdeservice.exception.UserNotFoundException;
 import com.ecagataydogan.kredinbizdeservice.producer.NotificationProducer;
 import com.ecagataydogan.kredinbizdeservice.producer.dto.NotificationDTO;
 import com.ecagataydogan.kredinbizdeservice.producer.enums.NotificationType;
 import com.ecagataydogan.kredinbizdeservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.sql.Update;
@@ -32,7 +34,11 @@ public class UserService {
     private final NotificationProducer notificationProducer;
 
 
+    @Transactional(rollbackOn = UserAlreadyExistException.class)
     public UserResponse createUser(CreateUserRequest createUserRequest) {
+        if (userRepository.existsByEmail(createUserRequest.getEmail())) {
+            throw new UserAlreadyExistException("email already exists");
+        }
         User toSave = userConverter.toUser(createUserRequest);
         User savedUser = userRepository.save(toSave);
         log.info("user saved");
@@ -48,15 +54,17 @@ public class UserService {
     }
 
     public UserResponse getUserById(Long userId) {
-        log.info("dbden alındı");
         Optional<User> optionalUser =  userRepository.findById(userId);
         if (optionalUser.isPresent()) {
+            log.info("take from db ");
             return userConverter.toResponse(optionalUser.get());
+
         }
         //Exception will occur
         throw new UserNotFoundException("user not found");
     }
 
+    @Transactional(rollbackOn = UserNotFoundException.class)
     public UserResponse updateUser(Long userId, UpdateUserRequest updateUserRequest) {
         Optional<User> optionalUser =  userRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -66,7 +74,6 @@ public class UserService {
         }
         //Exception will occur
         throw new UserNotFoundException("user not found");
-
 
     }
 
@@ -97,7 +104,7 @@ public class UserService {
 
     private NotificationDTO prepareNotificationDTO(NotificationType notificationType, String email) {
         return NotificationDTO.builder()
-                .message("user kaydedildi.")
+                .message("user saved")
                 .notificationType(notificationType)
                 .email(email)
                 .build();
