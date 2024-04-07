@@ -8,6 +8,7 @@ import com.ecagataydogan.kredinbizdeservice.dto.response.UserResponse;
 import com.ecagataydogan.kredinbizdeservice.entity.Address;
 import com.ecagataydogan.kredinbizdeservice.entity.Application;
 import com.ecagataydogan.kredinbizdeservice.entity.User;
+import com.ecagataydogan.kredinbizdeservice.exception.UserAlreadyExistException;
 import com.ecagataydogan.kredinbizdeservice.exception.UserNotFoundException;
 import com.ecagataydogan.kredinbizdeservice.producer.NotificationProducer;
 import com.ecagataydogan.kredinbizdeservice.producer.dto.NotificationDTO;
@@ -137,6 +138,20 @@ public class UserServiceTest {
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(foundUser);
         verify(userConverter, times(1)).toResponse(updatedUser);
+    }
+
+    @Test
+    public void should_throw_email_already_exist_exception() {
+        String existingEmail = "existing@example.com";
+        CreateUserRequest createUserRequest = new CreateUserRequest();
+        createUserRequest.setEmail(existingEmail);
+
+        when(userRepository.existsByEmail(existingEmail)).thenReturn(true);
+
+        assertThrows(UserAlreadyExistException.class, () -> userService.createUser(createUserRequest));
+
+        verify(userRepository, never()).save(any());
+        verify(notificationProducer, never()).sendNotification(any());
     }
 
     private CreateUserRequest prepareCreateUserRequest() {
